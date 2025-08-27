@@ -6,7 +6,7 @@ public class GoldenSaverTester {
         Dog dog3 = new Dog("Scooter", "pug");
         Dog dog4 = new Dog("Flash", "bulldog");
         
-        // ArrayList<Dog> list = new ArrayList();
+        ArrayList<Dog> list = new ArrayList();
         // {dog1, dog2, dog3, dog4};
 
     }
