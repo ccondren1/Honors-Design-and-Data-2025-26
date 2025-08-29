@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+//import java.util.Objects;
+
 public class GoldenSaverTester {
     
     public static void main(String[] args) {
@@ -7,7 +10,12 @@ public class GoldenSaverTester {
         Dog dog4 = new Dog("Flash", "bulldog");
         
         ArrayList<Dog> list = new ArrayList();
-        // {dog1, dog2, dog3, dog4};
+        list.add(dog1);
+        list.add(dog2);
+        list.add(dog3);
+        list.add(dog4);
+
+        PugSaver.rescuePugs(list);
 
     }
     

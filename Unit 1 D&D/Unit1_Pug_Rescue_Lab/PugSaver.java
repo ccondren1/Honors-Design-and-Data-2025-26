@@ -20,17 +20,21 @@ public class PugSaver {
 
 		// list.addAll(goldenDogs);
 
-		int j = list.size();
-		for (int i = 0; i < j; i++) {
+		System.out.println(list);
+		int j = list.size() - 1;
+		for (int i = 0; i <= j; i++) {
 			if (list.get(i).getBreed().equals("Golden Retriever") || list.get(i).getBreed().equals("Goldendoodle")) {
-				for (int y = j; j >= 0; y++) {
+				for (int y = j; j >= 0; y--) {
 					if (!list.get(i).getBreed().equals("Golden Retriever") || !list.get(i).getBreed().equals("Goldendoodle")) {
 						Dog dogTemp = list.get(y);
+						list.set(y, list.get(i));
+						list.set(i, dogTemp);
 					}
 				}
 
 			}
 			
 		}
+		System.out.println(list);
 	}
 }
