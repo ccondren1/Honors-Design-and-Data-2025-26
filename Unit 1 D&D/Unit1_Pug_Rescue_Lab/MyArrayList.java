@@ -1,13 +1,7 @@
 /* See ArrayList documentation here:
  * http://docs.oracle.com/javase/7/docs/api/java/util/ArrayList.html
- */
-
-/*
  * Your indexed functions should throw IndexOutOfBoundsException if index is invalid!
  */
-
-
- //making add method, check if length is 100 if not you just add, if it is make a new array copy everything, 2x size, probably do in a different method
 
 public class MyArrayList<E> {
 
@@ -20,7 +14,7 @@ public class MyArrayList<E> {
 	/* Constructor: Create it with whatever capacity you want? */
 	@SuppressWarnings("unchecked")
 	public MyArrayList() {
-		this.internalArray = (E[])new Object[100];
+		this.internalArray = (E[])new Object[10];
 	}
 
 	/* Constructor with initial capacity */
@@ -34,18 +28,29 @@ public class MyArrayList<E> {
 		return objectCount;
 	}
 
-	// /* Are there zero objects in the array list? */
-	// public boolean isEmpty() {
-	// 	/* ---- YOUR CODE HERE ---- */
-	// }
+	/* Are there zero objects in the array list? */
+	public boolean isEmpty() {
+		if (objectCount == 0){
+			return true;
+		}
+		return false;
+	}
 
 	/* Get the index-th object in the list. */
 	public E get(int index) {
+		if (index < 0 || index >= internalArray.length) {
+			throw new IndexOutOfBoundsException("Index out of bounds. ");
+		}
+
 		return internalArray[index];
 	}
 
 	/* Replace the object at index with obj.  returns object that was replaced. */
 	public E set(int index, E obj) {
+		if (index < 0 || index >= internalArray.length) {
+			throw new IndexOutOfBoundsException("Index out of bounds. ");
+		}
+
 		E temp = null;
 		internalArray[index] = temp;
 		internalArray[index] = obj;
@@ -54,26 +59,66 @@ public class MyArrayList<E> {
 
 	/* Returns true if this list contains an element equal to obj;
 	 otherwise returns false. */
-	// public boolean contains(E obj) {
-	// 	/* ---- YOUR CODE HERE ---- */
-	// }
+	public boolean contains(E obj) {
+		for (int i = 0; i < internalArray.length; i++) {
+			if (internalArray[i].equals(obj)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/* Insert an object at index */
-	// @SuppressWarnings("unchecked")
-	// public void add(int index, E obj) {
-	// 	/* ---- YOUR CODE HERE ---- */
-	// }
+	@SuppressWarnings("unchecked")
+	public void add(int index, E obj) {
+		if (index < 0 || index >= internalArray.length) {
+			throw new IndexOutOfBoundsException("Index out of bounds. ");
+		}
+
+		Object[] newArray = (E[]) new Object[internalArray.length * 2];
+		for (int i = 0; i < index; i++) {
+			newArray[i] = internalArray[i];
+		}
+		newArray[index] = obj;
+		for (int i = index; i < newArray.length; i++) {
+			newArray[i+1] = internalArray[i];
+		}
+	}
 
 	/* Add an object to the end of the list; returns true */
 	@SuppressWarnings("unchecked")
 	public boolean add(E obj) {
-		if (internalArray.length = 100) {}
+		if (internalArray.length != objectCount) {
+			internalArray[objectCount] = obj;
+			objectCount++;
+		} else {
+			Object[] newArray = (E[]) new Object[internalArray.length * 2];
+			for (int i = 0; i < internalArray.length; i++) {
+				newArray[i] = internalArray[i];
+			}
+			newArray[internalArray.length] = obj;
+			objectCount++;
+		}
+		return true;
 	}
 
 	/* Remove the object at index and shift.  Returns removed object. */
-	// public E remove(int index) {
-	// 	/* ---- YOUR CODE HERE ---- */
-	// }
+	@SuppressWarnings("unchecked")
+	public E remove(int index) {
+		if (index < 0 || index >= internalArray.length) {
+			throw new IndexOutOfBoundsException("Index out of bounds. ");
+		}
+		
+		Object[] newArray = (E[]) new Object[internalArray.length * 2];
+		for (int i = 0; i < index; i++) {
+			newArray[i] = internalArray[i];
+		}
+		for (int i = index + 1; i < newArray.length; i++) {
+			newArray[i] = internalArray[i];
+		}
+		objectCount--;
+		return (E) newArray;
+	}
 
 	/* Removes the first occurrence of the specified element from this list, 
 	 * if it is present. If the list does not contain the element, it is unchanged. 
@@ -81,9 +126,19 @@ public class MyArrayList<E> {
 	 * (o==null ? get(i)==null : o.equals(get(i))) (if such an element exists). 
 	 * Returns true if this list contained the specified element (or equivalently, 
 	 * if this list changed as a result of the call). */
-	// public boolean remove(E obj) {
-	// 	/* ---- YOUR CODE HERE ---- */
-	// }
+	@SuppressWarnings("unchecked")
+	public boolean remove(E obj) {
+		if (this.contains(obj)) {
+			for (int i = 0; i <= internalArray.length; i++) {
+				if (internalArray[i].equals(obj)) {
+					internalArray[i] = null;
+					return true;
+				}
+			}
+		}
+		objectCount--;
+		return false;
+	}
 
 
 	/* For testing; your string should output as "[X, X, X, X, ...]" where X, X, X, X, ... are the elements in the ArrayList.
