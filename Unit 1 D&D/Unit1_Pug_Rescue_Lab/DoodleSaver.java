@@ -17,7 +17,7 @@ public class DoodleSaver {
 				for (int y = end; y >= 0; y--) {
 					if (!list.get(y).getBreed().equals("Golden Retriever") || !list.get(y).getBreed().equals("Goldendoodle")) {
 						Dog dogTemp = list.get(y);
-						list.set(y + 1, list.get(i)); //why did I have to do +1?
+						list.set(y, list.get(i));
 						list.set(i, dogTemp);
 					}
 				}
