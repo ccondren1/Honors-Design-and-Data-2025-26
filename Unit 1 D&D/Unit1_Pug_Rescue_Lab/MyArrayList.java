@@ -41,7 +41,7 @@ public class MyArrayList<E> {
 	/* Get the index-th object in the list. */
 	//O(1)
 	public E get(int index) {
-		if (index < 0 || index >= internalArray.length) {
+		if (index < 0 || index >= objectCount) {
 			throw new IndexOutOfBoundsException("Index out of bounds. ");
 		}
 
@@ -51,7 +51,7 @@ public class MyArrayList<E> {
 	/* Replace the object at index with obj.  returns object that was replaced. */
 	//O(1)
 	public E set(int index, E obj) {
-		if (index < 0 || index >= internalArray.length) {
+		if (index < 0 || index >= objectCount) {
 			throw new IndexOutOfBoundsException("Index out of bounds. ");
 		}
 
@@ -65,7 +65,7 @@ public class MyArrayList<E> {
 	 otherwise returns false. */
 	 //O(n)
 	public boolean contains(E obj) {
-		for (int i = 0; i < internalArray.length; i++) {
+		for (int i = 0; i < objectCount; i++) {
 			if (internalArray[i].equals(obj)) {
 				return true;
 			}
@@ -93,6 +93,8 @@ public class MyArrayList<E> {
 		for (int i = index; i < newArray.length; i++) {
 			newArray[i+1] = internalArray[i];
 		}
+		
+		objectCount++;
 	}
 
 	/* Add an object to the end of the list; returns true */
@@ -116,7 +118,7 @@ public class MyArrayList<E> {
 	/* Remove the object at index and shift.  Returns removed object. */
 	@SuppressWarnings("unchecked")
 	public E remove(int index) {
-		if (index < 0 || index >= objectCount) {
+		if (index < 0 || index >= internalArray.length) {
 			throw new IndexOutOfBoundsException("Index out of bounds. ");
 		}
 
@@ -161,11 +163,17 @@ public class MyArrayList<E> {
 		if (internalArray.length == 0) {
 			return "[]";
 		}
-		String str = "[";
-		for (int i = 0; i < internalArray.length; i++) {
-			str += internalArray[i] + ", ";
-		}
-		return str + "]";
-	}
 
+		StringBuilder str = new StringBuilder("[");
+		for (int i = 0; i < internalArray.length; i++) {
+			if (internalArray[i] != null) {
+				str.append(internalArray[i] + ", ");
+			} else {
+				continue;
+			}
+		}
+
+		str.append("]");
+		return str.toString();
+	}
 }

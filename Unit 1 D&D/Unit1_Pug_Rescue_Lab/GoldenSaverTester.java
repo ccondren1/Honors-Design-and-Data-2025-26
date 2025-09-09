@@ -1,5 +1,5 @@
-//import java.util.ArrayList;
-//import java.util.Objects;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class GoldenSaverTester {
     
@@ -9,7 +9,7 @@ public class GoldenSaverTester {
         Dog dog3 = new Dog("Scooter", "Pug");
         Dog dog4 = new Dog("Flash", "Bulldog");
         
-        MyArrayList<Dog> list = new MyArrayList<Dog>();
+        ArrayList<Dog> list = new ArrayList<Dog>();
         list.add(dog1);
         list.add(dog2);
         list.add(dog3);
@@ -17,7 +17,8 @@ public class GoldenSaverTester {
 
         System.out.println("Initial List: " + list);
         System.out.println("\nCorrected list: ");
-        DoodleSaver.rescueDoodles(list);
+        PugSaver.rescuePugs(list);
+        System.out.println(list.toString());
 
     }
     
