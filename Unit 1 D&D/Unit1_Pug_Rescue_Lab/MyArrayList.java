@@ -57,7 +57,7 @@ public class MyArrayList<E> {
 
 		E temp = null;
 		internalArray[index] = temp;
-		internalArray[index] = obj;
+		//internalArray[index] = obj;
 		return temp;
 	}
 
@@ -76,7 +76,7 @@ public class MyArrayList<E> {
 	/* Insert an object at index */
 	@SuppressWarnings("unchecked")
 	public void add(int index, E obj) {
-		if (index < 0 || index >= internalArray.length) {
+		if (index < 0 || index > objectCount) {
 			throw new IndexOutOfBoundsException("Index out of bounds. ");
 		}
 
@@ -93,7 +93,7 @@ public class MyArrayList<E> {
 		for (int i = index; i < newArray.length; i++) {
 			newArray[i+1] = internalArray[i];
 		}
-		
+
 		objectCount++;
 	}
 
@@ -108,10 +108,11 @@ public class MyArrayList<E> {
 			for (int i = 0; i < internalArray.length; i++) {
 				newArray[i] = internalArray[i];
 			}
-			newArray[internalArray.length] = obj;
-			objectCount++;
+			internalArray = (E[])newArray;
 		}
 
+		internalArray[objectCount] = obj;
+		objectCount++;
 		return true;
 	}
 
@@ -121,16 +122,21 @@ public class MyArrayList<E> {
 		if (index < 0 || index >= internalArray.length) {
 			throw new IndexOutOfBoundsException("Index out of bounds. ");
 		}
+		
+		E removed = internalArray[index];
 
-		Object[] newArray = (E[]) new Object[internalArray.length * 2];
-		for (int i = 0; i < index; i++) {
-			newArray[i] = internalArray[i];
+		//Object[] newArray = (E[]) new Object[internalArray.length * 2];
+		// for (int i = 0; i < index; i++) {
+		// 	newArray[i] = internalArray[i];
+		// }
+
+		for (int i = index; i < objectCount - 1; i++) {
+			internalArray[i + 1] = internalArray[i];
 		}
-		for (int i = index + 1; i < newArray.length; i++) {
-			newArray[i] = internalArray[i];
-		}
+
+		internalArray[objectCount - 1] = null;
 		objectCount--;
-		return (E) newArray;
+		return removed;
 	}
 
 	/* Removes the first occurrence of the specified element from this list, 
@@ -142,14 +148,20 @@ public class MyArrayList<E> {
 	//O(n)
 	//@SuppressWarnings("unchecked")
 	public boolean remove(E obj) {
+		if (obj == null) {
+			throw new IllegalArgumentException("Object is null. ");
+		}
 		if (this.contains(obj)) {
-			for (int i = 0; i <= internalArray.length; i++) {
+			for (int i = 0; i < objectCount; i++) {
 				if (internalArray[i].equals(obj)) {
 					remove(i);
 					return true;
 				}
 			}
+		} else {
+			throw new IllegalArgumentException("Object isn't in list. ");
 		}
+		
 		objectCount--;
 		return false;
 	}
@@ -167,7 +179,10 @@ public class MyArrayList<E> {
 		StringBuilder str = new StringBuilder("[");
 		for (int i = 0; i < internalArray.length; i++) {
 			if (internalArray[i] != null) {
-				str.append(internalArray[i] + ", ");
+				str.append(internalArray[i]);
+				if (i < objectCount - 1) {
+					str.append(", ");
+				}
 			} else {
 				continue;
 			}
