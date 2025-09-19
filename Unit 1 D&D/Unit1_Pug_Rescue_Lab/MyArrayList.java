@@ -55,9 +55,8 @@ public class MyArrayList<E> {
 			throw new IndexOutOfBoundsException("Index out of bounds. ");
 		}
 
-		E temp = null;
-		internalArray[index] = temp;
-		//internalArray[index] = obj;
+		E temp = internalArray[index];
+		internalArray[index] = obj;
 		return temp;
 	}
 
@@ -84,31 +83,41 @@ public class MyArrayList<E> {
 			internalArray[index] = obj;
 		}
 
-		Object[] newArray = (E[]) new Object[internalArray.length * 2];
-		for (int i = 0; i < index; i++) {
-			newArray[i] = internalArray[i];
+		if (objectCount == internalArray.length) {
+			Object[] newArray = (E[]) new Object[internalArray.length * 2];
+			for (int i = 0; i < objectCount; i++) {
+				newArray[i] = internalArray[i];
+			}
+			internalArray = (E[])newArray;
 		}
 
-		newArray[index] = obj;
-		for (int i = index; i < newArray.length; i++) {
-			newArray[i+1] = internalArray[i];
+		for (int i = objectCount; i > index; i--) {
+			internalArray[i] = internalArray[i-1];
 		}
 
+		// newArray[index] = obj;
+		// for (int i = index; i < objectCount; i++) {
+		// 	newArray[i+1] = internalArray[i];
+		// }
+		// internalArray = (E[])newArray;
+
+		internalArray[index] = obj;
 		objectCount++;
 	}
 
 	/* Add an object to the end of the list; returns true */
 	@SuppressWarnings("unchecked")
 	public boolean add(E obj) {
-		if (internalArray.length != objectCount) {
-			internalArray[objectCount] = obj;
-			objectCount++;
-		} else {
-			Object[] newArray = (E[]) new Object[internalArray.length * 2];
-			for (int i = 0; i < internalArray.length; i++) {
+		// if (internalArray.length != objectCount) {
+		// 	internalArray[objectCount] = obj;
+		// 	objectCount++;
+		
+		if (internalArray.length == objectCount) {
+			E[] newArray = (E[]) new Object[internalArray.length * 2];
+			for (int i = 0; i < objectCount; i++) {
 				newArray[i] = internalArray[i];
 			}
-			internalArray = (E[])newArray;
+			internalArray = newArray;
 		}
 
 		internalArray[objectCount] = obj;
@@ -117,7 +126,7 @@ public class MyArrayList<E> {
 	}
 
 	/* Remove the object at index and shift.  Returns removed object. */
-	@SuppressWarnings("unchecked")
+	//@SuppressWarnings("unchecked")
 	public E remove(int index) {
 		if (index < 0 || index >= internalArray.length) {
 			throw new IndexOutOfBoundsException("Index out of bounds. ");
@@ -131,7 +140,7 @@ public class MyArrayList<E> {
 		// }
 
 		for (int i = index; i < objectCount - 1; i++) {
-			internalArray[i + 1] = internalArray[i];
+			internalArray[i] = internalArray[i + 1];
 		}
 
 		internalArray[objectCount - 1] = null;
@@ -149,7 +158,7 @@ public class MyArrayList<E> {
 	//@SuppressWarnings("unchecked")
 	public boolean remove(E obj) {
 		if (obj == null) {
-			throw new IllegalArgumentException("Object is null. ");
+			return false;
 		}
 		if (this.contains(obj)) {
 			for (int i = 0; i < objectCount; i++) {
@@ -161,7 +170,7 @@ public class MyArrayList<E> {
 		} else {
 			throw new IllegalArgumentException("Object isn't in list. ");
 		}
-		
+
 		objectCount--;
 		return false;
 	}
@@ -177,7 +186,7 @@ public class MyArrayList<E> {
 		}
 
 		StringBuilder str = new StringBuilder("[");
-		for (int i = 0; i < internalArray.length; i++) {
+		for (int i = 0; i < objectCount; i++) {
 			if (internalArray[i] != null) {
 				str.append(internalArray[i]);
 				if (i < objectCount - 1) {

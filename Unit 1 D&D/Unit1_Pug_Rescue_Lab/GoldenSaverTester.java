@@ -9,16 +9,16 @@ public class GoldenSaverTester {
         Dog dog3 = new Dog("Scooter", "Pug");
         Dog dog4 = new Dog("Flash", "Bulldog");
         
-        ArrayList<Dog> list = new ArrayList<Dog>();
+        ArrayList<Dog> list = new ArrayList<>();
         list.add(dog1);
         list.add(dog2);
         list.add(dog3);
         list.add(dog4);
 
-        System.out.println("Initial List: " + list);
+        System.out.println("Initial List: " + list.toString());
         System.out.println("\nCorrected list: ");
         PugSaver.rescuePugs(list);
-        System.out.println(list.toString());
+        System.out.println(list);
 
     }
     
