@@ -2,13 +2,13 @@
 
 public class ListNode<E> {
 
-private E value;
+  private E value;
   private ListNode<E> next;
 
   public ListNode(E v) {
     value = v;
     next = null;
-  }
+    }
 
   public ListNode(E v, ListNode<E> nx) {
     value = v;
