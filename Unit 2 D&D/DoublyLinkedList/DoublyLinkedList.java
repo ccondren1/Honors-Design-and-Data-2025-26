@@ -1,3 +1,4 @@
+import org.w3c.dom.Node;
 
 public class DoublyLinkedList {
 	// Implements a circular doubly-linked list.
@@ -13,6 +14,27 @@ public class DoublyLinkedList {
 	// Constructor: creates a list that contains
 	// all elements from the array values, in the same order
 	public DoublyLinkedList(Nucleotide[] values) {
+		if (values == null) {
+			throw new IllegalArgumentException("The array is null. ");
+		}
+
+		if (values.length == 0) {
+			nodeCount = 0;
+			SENTINEL.setNext(SENTINEL);
+			SENTINEL.setPrevious(SENTINEL);
+			return;
+		} else {
+			ListNode2<Nucleotide> current = SENTINEL.getNext();
+			nodeCount = 1;
+			
+			for (int i = 1; i < values.length; i++){
+				ListNode2<Nucleotide> newNode = new ListNode2<>(values[i]);
+				current.setNext(newNode);
+				//current.setPrevious();
+				current = newNode;
+				nodeCount++;
+			}
+		}
 
 	}
 	
@@ -31,34 +53,95 @@ public class DoublyLinkedList {
 
 	// Returns true if this list is empty; otherwise returns false.
 	public boolean isEmpty() {
+		if (nodeCount == 0) {
+			return true;
+		}
+		return false;
 	}
 
 	// Returns the number of elements in this list.
 	public int size() {
+		return nodeCount;
 	}
 
 	// Returns true if this list contains an element equal to obj;
 	// otherwise returns false.
 	public boolean contains(Nucleotide obj) {
+		if (nodeCount == 0) {
+			throw new IllegalArgumentException("List in empty. ");
+		}
+
+		for (ListNode2<Nucleotide> current = SENTINEL.getNext(); current != null; current = current.getNext()) {
+			if (current.getValue() == obj || (current.getValue() == null && obj == null)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	// Returns the index of the first element in equal to obj;
 	// if not found, returns -1.
 	public int indexOf(Nucleotide obj) {
+		int index = 0;
+
+		for (ListNode2<Nucleotide> current = SENTINEL.getNext(); current != null; current = current.getNext()) {
+			if (current.getValue() == obj || (current.getValue() == null && obj == null)) {
+				return index;
+			}
+			index++;
+		}
+
+		return -1;
 	}
 
 	// Adds obj to this collection.  Returns true if successful;
 	// otherwise returns false.
 	public boolean add(Nucleotide obj) {
+		ListNode2<Nucleotide> newNode = new ListNode2<>(obj);
+
+		if (nodeCount == 0) {
+			SENTINEL.setNext(newNode);
+			SENTINEL.setPrevious(newNode);
+		} else {
+			SENTINEL.getPrevious().setNext(newNode);
+			newNode.setNext(SENTINEL);
+			newNode.setPrevious(SENTINEL.getPrevious());
+			SENTINEL.setPrevious(newNode);
+		}
+
+		nodeCount++;
+		return true;
 	}
 
 	// Removes the first element that is equal to obj, if any.
 	// Returns true if successful; otherwise returns false.
 	public boolean remove(Nucleotide obj) {
+		if (nodeCount == 0) {
+			throw new IllegalArgumentException("List is empty.");
+		}
+
+		int i = indexOf(obj);
+		Nucleotide n = get(i);
+		
+
 	}
 
 	// Returns the i-th element.               
 	public Nucleotide get(int i) {
+		if (nodeCount == 0 || i < 0 || i >= nodeCount) {
+			return null;
+		}
+
+		ListNode2<Nucleotide> current = SENTINEL.getNext();
+		for (int j = 0; j < i; j++) {
+			if (current.getNext() == null) {
+				return null;
+			}
+			current = current.getNext();
+		}
+
+		return current.getValue();
 	}
 
 	// Replaces the i-th element with obj and returns the old value.
