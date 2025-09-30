@@ -13,6 +13,7 @@ public class SinglyLinkedList<E> {
 		//Object[] list = new Object[nodeCount];
 		this.head = null;
 		this.tail = null;
+		this.nodeCount = 0;
 	}
 
 	// Constructor: creates a list that contains all elements from the array values, in the same order
@@ -22,15 +23,26 @@ public class SinglyLinkedList<E> {
 			throw new IllegalArgumentException("The array is null");
 		}
 
-		this.head = (ListNode<E>)values[0];
-		this.tail = (ListNode<E>)values[values.length - 1];
+		if (values.length == 0) {
+			head = null;
+			tail = null;
+			nodeCount = 0;
+			return;
+		}
+
+		this.head = new ListNode<>((E)values[0], null);
+		ListNode<E> current = head;
+		nodeCount = 1; 
 
 
-		for (int i = 0; i < values.length - 1; i++) {
-			ListNode<E> newNode= new ListNode((E)values[i], (ListNode<E>)values[i+1]);
-			add((E)newNode);
+		for (int i = 1; i < values.length; i++) {
+			ListNode<E> newNode= new ListNode<>((E) values[i], null);
+			current.setNext(newNode);
+			current = newNode;
 			nodeCount++;
 		}
+
+		this.tail = current;
 		
 	}
 	
@@ -68,8 +80,8 @@ public class SinglyLinkedList<E> {
 			throw new IllegalArgumentException("List in null");
 		}
 
-		for (ListNode<E> current = head; current != tail; current = current.getNext()) {
-			if (current.getValue() == obj) {
+		for (ListNode<E> current = head; current != null; current = current.getNext()) {
+			if (current.getValue() == obj || (current.getValue() == null && obj == null)) {
 				return true;
 			}
 		}
@@ -86,8 +98,8 @@ public class SinglyLinkedList<E> {
 
 		int index = 0;
 
-		for (ListNode<E> current = head; current != tail; current = current.getNext()) {
-			if (current.getValue() == obj) {
+		for (ListNode<E> current = head; current != null; current = current.getNext()) {
+			if (current.getValue() == obj || (current.getValue() == null && obj == null)) {
 				return index;
 			}
 			index++;
@@ -98,11 +110,18 @@ public class SinglyLinkedList<E> {
 
 	// Adds obj to this collection.  Returns true if successful;
 	// otherwise returns false.
-	@SuppressWarnings("unchecked")
 	public boolean add(E obj) {
-		ListNode<E> newNode = new ListNode(obj);
-		tail.setNext(newNode);
-		tail = newNode;
+		ListNode<E> newNode = new ListNode<>(obj);
+
+		if (head == null) {
+			head = newNode;
+			tail = newNode;
+		} else {
+			tail.setNext(newNode);
+			tail = newNode;
+		}
+
+		nodeCount++;
 		return true;
 	}
 
@@ -111,7 +130,7 @@ public class SinglyLinkedList<E> {
 	@SuppressWarnings("unchecked")
 	public boolean remove(E obj) {
 		if (head == null) {
-			throw new IllegalArgumentException("List in null");
+			return false;
 		}
 
 		int index = indexOf(obj);
@@ -138,8 +157,8 @@ public class SinglyLinkedList<E> {
 		}
 	}
 
-	// Returns the i-th element.              
-	public E get(int i) {
+	              
+	public ListNode<E> getNode(int i) {
 		if (head == null || i < 0 || i >= nodeCount) {
 			return null;
 		}
@@ -152,7 +171,12 @@ public class SinglyLinkedList<E> {
 			current = current.getNext();
 		}
 
-		return current.getValue();
+		return current;
+	}
+
+	// Returns the i-th element.
+	public E get(int i) {
+		return getNode(i).getValue();
 	}
 
 	// Replaces the i-th element with obj and returns the old value.
@@ -162,7 +186,11 @@ public class SinglyLinkedList<E> {
 			throw new IllegalArgumentException("List in null");
 		}
 
-		ListNode<E> node = (ListNode<E>)(get(i));
+		if (i < 0 || i >= nodeCount) {
+			throw new IndexOutOfBoundsException("Index out of bounds. ");
+		}
+
+		ListNode<E> node = (ListNode<E>)(getNode(i));
 		if (node == null) {
 			return null;
 		}
@@ -176,12 +204,15 @@ public class SinglyLinkedList<E> {
 	// of the list by one.
 	@SuppressWarnings("unchecked") 
 	public void add(int i, Object obj) {
-		ListNode<E> previousNode = (ListNode<E>)get(i - 1);
-		ListNode<E> nextNode = (ListNode<E>)get(i + 1);
+		ListNode<E> previousNode = (ListNode<E>)getNode(i - 1);
+		ListNode<E> nextNode = (ListNode<E>)getNode(i + 1);
 		ListNode<E> addedNode = new ListNode<>((E)obj);
-		
+
+		if (i < 0) {
+			throw new IndexOutOfBoundsException("Index out of bounds. ");
+		}
 		if (head == null && i > 0) {
-			throw new IllegalArgumentException("List in null");
+			throw new IllegalArgumentException("List is null");
 		}
 		if (head == null && i == 0) {
 			add((E)obj);
@@ -196,31 +227,46 @@ public class SinglyLinkedList<E> {
 
 	// Removes the i-th element and returns its value.
 	// Decrements the size of the list by one.
-	@SuppressWarnings("unchecked") 
 	public E remove(int i) {
 		if (head == null) {
 			throw new IllegalArgumentException("List in null");
 		}
 
-		ListNode<E> previousNode = (ListNode<E>)get(i - 1);
-		ListNode<E> nextNode = (ListNode<E>)get(i + 1);
-		previousNode.setNext(nextNode);
-		nodeCount--;
-		return get(i);
+		if (i < 0 || i >= nodeCount){
+			throw new IndexOutOfBoundsException("Index out of bounds. ");
+		}
+
+		if (i == 0) {
+			E removedValue = head.getValue();
+			head = head.getNext();
+			if (head == null) {
+				tail = null;
+			}
+			nodeCount--;
+			return removedValue;
+		} else {
+			ListNode<E> previousNode = (ListNode<E>)getNode(i - 1);
+			ListNode<E> nextNode = (ListNode<E>)getNode(i + 1);
+			E removedValue = get(i);
+			previousNode.setNext(nextNode);
+			nodeCount--;
+			return removedValue;
+		}
 	}
 
 	// Returns a string representation of this list exactly like that for MyArrayList.
 	public String toString() {
-		StringBuilder str = new StringBuilder();
+		StringBuilder str = new StringBuilder("[");
 		ListNode<E> current = head;
-		for (int j = 0; j < nodeCount; j++) {
-			if (current.getNext() == null) {
-				return null;
-			}
+		while (current != null) {
 			str.append(current.getValue());
+			if (current.getNext() != null) {
+				str.append(", ");
+			}
 			current = current.getNext();
 		}
 		
+		str.append("]");
 		return str.toString();
 	}
 	
