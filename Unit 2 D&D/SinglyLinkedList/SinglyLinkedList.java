@@ -127,40 +127,24 @@ public class SinglyLinkedList<E> {
 
 	// Removes the first element that is equal to obj, if any.
 	// Returns true if successful; otherwise returns false.
-	@SuppressWarnings("unchecked")
 	public boolean remove(E obj) {
 		if (head == null) {
 			return false;
 		}
 
 		int index = indexOf(obj);
-		
-		ListNode<E> previousNode = (ListNode<E>)(get(index - 1));
-		ListNode<E> nextNode = (ListNode<E>)(get(index + 1));
-		
-
-		if (index > 0 || index < nodeCount - 2) {
-			previousNode.setNext(nextNode);
-			nodeCount --;
-			return true;
-		} else if (index == 0) {
-			head = nextNode;
-			nodeCount --;
-			return true;
-		} else if (index == nodeCount - 1) {
-			tail = previousNode;
-			nodeCount --;
-			return true;
-		} else {
-			nodeCount --;
+		if (index == -1) {
 			return false;
 		}
+		
+		remove(index);
+		return true;
 	}
 
 	              
 	public ListNode<E> getNode(int i) {
 		if (head == null || i < 0 || i >= nodeCount) {
-			return null;
+			throw new IndexOutOfBoundsException("Index out of bounds. ");
 		}
 
 		ListNode<E> current = head;
@@ -205,14 +189,14 @@ public class SinglyLinkedList<E> {
 	@SuppressWarnings("unchecked") 
 	public void add(int i, Object obj) {
 		ListNode<E> previousNode = (ListNode<E>)getNode(i - 1);
-		ListNode<E> nextNode = (ListNode<E>)getNode(i + 1);
+		ListNode<E> nextNode = (ListNode<E>)getNode(i);
 		ListNode<E> addedNode = new ListNode<>((E)obj);
 
 		if (i < 0) {
 			throw new IndexOutOfBoundsException("Index out of bounds. ");
 		}
-		if (head == null && i > 0) {
-			throw new IllegalArgumentException("List is null");
+		if (i > nodeCount) {
+			throw new IndexOutOfBoundsException("Index out of bounds. ");
 		}
 		if (head == null && i == 0) {
 			add((E)obj);
@@ -227,6 +211,7 @@ public class SinglyLinkedList<E> {
 
 	// Removes the i-th element and returns its value.
 	// Decrements the size of the list by one.
+	@SuppressWarnings("unchecked")
 	public E remove(int i) {
 		if (head == null) {
 			throw new IllegalArgumentException("List in null");
@@ -235,23 +220,27 @@ public class SinglyLinkedList<E> {
 		if (i < 0 || i >= nodeCount){
 			throw new IndexOutOfBoundsException("Index out of bounds. ");
 		}
+		
+		
+		E removedValue = null;
+
 
 		if (i == 0) {
-			E removedValue = head.getValue();
+			removedValue = head.getValue();
 			head = head.getNext();
-			if (head == null) {
-				tail = null;
-			}
-			nodeCount--;
-			return removedValue;
+		} else if (i == nodeCount - 1) {
+			removedValue = (E)tail;
+			tail = getNode(i - 1);
+			tail.setNext(null);
 		} else {
 			ListNode<E> previousNode = (ListNode<E>)getNode(i - 1);
 			ListNode<E> nextNode = (ListNode<E>)getNode(i + 1);
-			E removedValue = get(i);
+			removedValue = get(i);
 			previousNode.setNext(nextNode);
-			nodeCount--;
-			return removedValue;
 		}
+
+		nodeCount--;
+		return removedValue;
 	}
 
 	// Returns a string representation of this list exactly like that for MyArrayList.
