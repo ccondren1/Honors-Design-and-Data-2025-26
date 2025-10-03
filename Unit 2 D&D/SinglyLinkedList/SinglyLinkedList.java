@@ -166,10 +166,6 @@ public class SinglyLinkedList<E> {
 	// Replaces the i-th element with obj and returns the old value.
 	@SuppressWarnings("unchecked") 
 	public E set(int i, Object obj) {
-		if (head == null) {
-			throw new IllegalArgumentException("List in null");
-		}
-
 		if (i < 0 || i >= nodeCount) {
 			throw new IndexOutOfBoundsException("Index out of bounds. ");
 		}
@@ -188,30 +184,38 @@ public class SinglyLinkedList<E> {
 	// of the list by one.
 	@SuppressWarnings("unchecked") 
 	public void add(int i, Object obj) {
-		ListNode<E> previousNode = (ListNode<E>)getNode(i - 1);
-		ListNode<E> nextNode = (ListNode<E>)getNode(i);
-		ListNode<E> addedNode = new ListNode<>((E)obj);
-
 		if (i < 0) {
 			throw new IndexOutOfBoundsException("Index out of bounds. ");
 		}
 		if (i > nodeCount) {
 			throw new IndexOutOfBoundsException("Index out of bounds. ");
 		}
+
+		if (i == nodeCount - 1) {
+			add((E)obj);
+		}
+
+		ListNode<E> previousNode = (ListNode<E>)getNode(i - 1);
+		ListNode<E> nextNode = (ListNode<E>)getNode(i);
+		ListNode<E> addedNode = new ListNode<>((E)obj);
+
+		
 		if (head == null && i == 0) {
 			add((E)obj);
 			head = addedNode;
 			tail = addedNode;
-		}
+		} else if (head != null && i == 0) {
+			addedNode.setNext(head);
+			head = addedNode;
 
 		addedNode.setNext(nextNode);
 		previousNode.setNext(addedNode);
 		nodeCount++;
+		}
 	}
 
 	// Removes the i-th element and returns its value.
 	// Decrements the size of the list by one.
-	@SuppressWarnings("unchecked")
 	public E remove(int i) {
 		if (head == null) {
 			throw new IllegalArgumentException("List in null");
@@ -227,9 +231,14 @@ public class SinglyLinkedList<E> {
 
 		if (i == 0) {
 			removedValue = head.getValue();
-			head = head.getNext();
+			if (nodeCount == 1) {
+				head = null;
+				tail = null;
+			} else {
+				head = head.getNext();
+			}
 		} else if (i == nodeCount - 1) {
-			removedValue = (E)tail;
+			removedValue = tail.getValue();
 			tail = getNode(i - 1);
 			tail.setNext(null);
 		} else {
@@ -261,3 +270,4 @@ public class SinglyLinkedList<E> {
 	
 
 }
+
