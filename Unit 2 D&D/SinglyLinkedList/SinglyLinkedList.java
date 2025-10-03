@@ -171,9 +171,6 @@ public class SinglyLinkedList<E> {
 		}
 
 		ListNode<E> node = (ListNode<E>)(getNode(i));
-		if (node == null) {
-			return null;
-		}
 
 		E value = node.getValue();
 		node.setValue((E)obj);

@@ -67,9 +67,7 @@ public class DoublyLinkedList {
 	// Returns true if this list contains an element equal to obj;
 	// otherwise returns false.
 	public boolean contains(Nucleotide obj) {
-		if (nodeCount == 0) {
-			throw new IllegalArgumentException("List in empty. ");
-		}
+		listIsNull();
 
 		for (ListNode2<Nucleotide> current = SENTINEL.getNext(); current != null; current = current.getNext()) {
 			if (current.getValue() == obj || (current.getValue() == null && obj == null)) {
@@ -117,19 +115,42 @@ public class DoublyLinkedList {
 	// Removes the first element that is equal to obj, if any.
 	// Returns true if successful; otherwise returns false.
 	public boolean remove(Nucleotide obj) {
-		if (nodeCount == 0) {
-			throw new IllegalArgumentException("List is empty.");
-		}
+		listIsNull();
 
 		int i = indexOf(obj);
-		Nucleotide n = get(i);
+		ListNode2<Nucleotide> n = getNode(i);
 		
+		//remove middle object
+		if (i > 0 && i < nodeCount - 1) {
+			ListNode2<Nucleotide> previousNode = n.getPrevious();
+			ListNode2<Nucleotide> nextNode = n.getNext();
+			previousNode.setNext(nextNode);
+			nextNode.setPrevious(previousNode);
+			return true;
+		}
 
+		//remove first object
+		if (i == 0) {
+			(n.getNext()).setPrevious(SENTINEL);
+			SENTINEL.setNext(n.getNext());
+			return true;
+		}
+
+		//remove last object
+		if (i == nodeCount - 1) {
+			n.getPrevious().setNext(SENTINEL);
+			SENTINEL.setPrevious(n.getPrevious());
+			return true;
+		}
+
+		return false;
 	}
 
 	// Returns the i-th element.               
-	public Nucleotide get(int i) {
-		if (nodeCount == 0 || i < 0 || i >= nodeCount) {
+	public ListNode2<Nucleotide> getNode(int i) {
+		indexOutOfBounds(i);
+
+		if (nodeCount == 0) {
 			return null;
 		}
 
@@ -141,27 +162,94 @@ public class DoublyLinkedList {
 			current = current.getNext();
 		}
 
-		return current.getValue();
+		return current;
+	}
+
+	public Nucleotide get(int i) {
+		return getNode(i).getValue();
 	}
 
 	// Replaces the i-th element with obj and returns the old value.
 	public Nucleotide set(int i, Nucleotide obj) {
+		indexOutOfBounds(i);
+
+		ListNode2<Nucleotide> node = getNode(i);
+		Nucleotide value = node.getValue();
+		node.setValue(obj);
+		return value;
 	}
 
 	// Inserts obj to become the i-th element. Increments the size
 	// of the list by one.
 	public void add(int i, Nucleotide obj) {
+		indexOutOfBounds(i);
+
+		if (i == nodeCount - 1) {
+			add(obj);
+		}
+		
+		ListNode2<Nucleotide> addedNode = new ListNode2<>(obj);
+		ListNode2<Nucleotide> nextNode = getNode(i + 1);
+		ListNode2<Nucleotide> previousNode = SENTINEL;
+		if (i != 0) {
+			previousNode = getNode(i-1);
+		}
+
+		previousNode.setNext(addedNode);
+		addedNode.setPrevious(previousNode);
+		addedNode.setNext(nextNode);
+		nextNode.setPrevious(addedNode);
+
+		nodeCount++;
 	}
 
 	// Removes the i-th element and returns its value.
 	// Decrements the size of the list by one.
 	public Nucleotide remove(int i) {
+		indexOutOfBounds(i);
+		listIsNull();
+
+		ListNode2<Nucleotide> removedValue = null;
+
+		if (i == 0) {
+			removedValue = SENTINEL.getNext();
+			if (nodeCount == 1) {
+				SENTINEL.setNext(SENTINEL);
+				SENTINEL.setPrevious(SENTINEL);
+			} else {
+				SENTINEL.setNext(SENTINEL.getNext().getNext());
+				SENTINEL.getNext().getNext().setPrevious(SENTINEL);
+			}
+		} else if (i == nodeCount - 1) {
+			removedValue = SENTINEL.getPrevious();
+			SENTINEL.setPrevious(removedValue.getPrevious());
+			removedValue.getPrevious().setNext(SENTINEL);
+		} else {
+			ListNode2<Nucleotide> previousNode = getNode(i - 1);
+			ListNode2<Nucleotide> nextNode = getNode(i + 1);
+			removedValue = getNode(i);
+			previousNode.setNext(nextNode);
+			nextNode.setPrevious(previousNode);
+		}
+		
+		nodeCount--;
+		return removedValue.getValue();
 	}
 
 	// Returns a string representation of this list exactly like that for MyArrayList.
 	public String toString() {
+		StringBuilder str = new StringBuilder("[");
+		ListNode2<Nucleotide> current = SENTINEL.getNext();
+		while (current != SENTINEL) {
+			str.append(current.getValue());
+			if (current.getNext() != SENTINEL) {
+				str.append(", ");
+			}
+			current = current.getNext();
+		}
 
-
+		str.append("]");
+		return str.toString();
 	}
 	
 	// Like question 7 on the SinglyLinkedList test:
@@ -198,4 +286,15 @@ public class DoublyLinkedList {
 		
 	}
 
+	public void indexOutOfBounds(int i) {
+		if (i < 0 || i >= nodeCount) {
+			throw new IndexOutOfBoundsException("Index out of bounds. ");
+		}
+	}
+
+	public void listIsNull() {
+		if (nodeCount == 0) {
+			throw new IllegalArgumentException("List is null. ");
+		}
+	}
 }
