@@ -77,7 +77,7 @@ public class SinglyLinkedList<E> {
 	// otherwise returns false.
 	public boolean contains(E obj) {
 		if (head == null) {
-			throw new IllegalArgumentException("List in null");
+			return false;
 		}
 
 		for (ListNode<E> current = head; current != null; current = current.getNext()) {
@@ -93,7 +93,7 @@ public class SinglyLinkedList<E> {
 	// if not found, returns -1.
 	public int indexOf(E obj) {
 		if (head == null) {
-			throw new IllegalArgumentException("List in null");
+			return -1;
 		}
 
 		int index = 0;
@@ -149,9 +149,6 @@ public class SinglyLinkedList<E> {
 
 		ListNode<E> current = head;
 		for (int j = 0; j < i; j++) {
-			if (current.getNext() == null) {
-				return null;
-			}
 			current = current.getNext();
 		}
 
@@ -171,6 +168,9 @@ public class SinglyLinkedList<E> {
 		}
 
 		ListNode<E> node = (ListNode<E>)(getNode(i));
+		if (node == null) {
+			return null;
+		}
 
 		E value = node.getValue();
 		node.setValue((E)obj);
@@ -188,27 +188,19 @@ public class SinglyLinkedList<E> {
 			throw new IndexOutOfBoundsException("Index out of bounds. ");
 		}
 
-		if (i == nodeCount - 1) {
-			add((E)obj);
-		}
-
 		ListNode<E> previousNode = (ListNode<E>)getNode(i - 1);
 		ListNode<E> nextNode = (ListNode<E>)getNode(i);
 		ListNode<E> addedNode = new ListNode<>((E)obj);
 
-		
 		if (head == null && i == 0) {
 			add((E)obj);
 			head = addedNode;
 			tail = addedNode;
-		} else if (head != null && i == 0) {
-			addedNode.setNext(head);
-			head = addedNode;
+		}
 
 		addedNode.setNext(nextNode);
 		previousNode.setNext(addedNode);
 		nodeCount++;
-		}
 	}
 
 	// Removes the i-th element and returns its value.
@@ -222,27 +214,26 @@ public class SinglyLinkedList<E> {
 			throw new IndexOutOfBoundsException("Index out of bounds. ");
 		}
 		
-		
 		E removedValue = null;
-
 
 		if (i == 0) {
 			removedValue = head.getValue();
-			if (nodeCount == 1) {
-				head = null;
+			head = head.getNext();
+			if (head == null) {
 				tail = null;
-			} else {
-				head = head.getNext();
 			}
 		} else if (i == nodeCount - 1) {
 			removedValue = tail.getValue();
 			tail = getNode(i - 1);
 			tail.setNext(null);
 		} else {
-			ListNode<E> previousNode = (ListNode<E>)getNode(i - 1);
-			ListNode<E> nextNode = (ListNode<E>)getNode(i + 1);
-			removedValue = get(i);
-			previousNode.setNext(nextNode);
+			ListNode<E> previousNode = getNode(i - 1);
+			ListNode<E> toRemove = previousNode.getNext();
+        	removedValue = toRemove.getValue();
+			if (removedValue == tail) {
+				tail = previousNode;
+			}
+			previousNode.setNext(toRemove.getNext());
 		}
 
 		nodeCount--;
@@ -267,4 +258,3 @@ public class SinglyLinkedList<E> {
 	
 
 }
-
