@@ -4,10 +4,9 @@ import java.util.Objects;
 public class PugSaver {
 
 	//Moves every dog whose breed is "doodle" in the list to the back of the list
-	public static void rescuePugs(ArrayList<Dog> list) {
+	public static void rescueGoldenDogs(ArrayList<Dog> list) {
 		if (list == null) {
-			System.out.println("There is no dogs in list. ");
-			return;
+			throw new IllegalArgumentException("There is no dogs in list. ");
 		}
 
 		ArrayList<Dog> temp = new ArrayList<>();

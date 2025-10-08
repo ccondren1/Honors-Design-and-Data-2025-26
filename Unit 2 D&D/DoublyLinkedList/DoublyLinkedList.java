@@ -14,28 +14,31 @@ public class DoublyLinkedList {
 	// Constructor: creates a list that contains
 	// all elements from the array values, in the same order
 	public DoublyLinkedList(Nucleotide[] values) {
-		if (values == null) {
-			throw new IllegalArgumentException("The array is null. ");
-		}
+		// if (values == null) {
+		// 	throw new IllegalArgumentException("The array is null. ");
+		// }
 
 		if (values.length == 0) {
 			nodeCount = 0;
 			SENTINEL.setNext(SENTINEL);
 			SENTINEL.setPrevious(SENTINEL);
 			return;
+
 		} else {
-			ListNode2<Nucleotide> current = SENTINEL.getNext();
-			nodeCount = 1;
+			ListNode2<Nucleotide> prev = SENTINEL;
+			nodeCount = 0;
 			
-			for (int i = 1; i < values.length; i++){
+			for (int i = 0; i < values.length; i++){
 				ListNode2<Nucleotide> newNode = new ListNode2<>(values[i]);
-				current.setNext(newNode);
-				//current.setPrevious();
-				current = newNode;
+				prev.setNext(newNode);
+				newNode.setPrevious(prev);	
+				prev = newNode;
 				nodeCount++;
 			}
-		}
 
+			prev.setNext(SENTINEL);
+			SENTINEL.setPrevious(prev);
+		}
 	}
 	
 	public ListNode2<Nucleotide> getSentinel() {
@@ -255,35 +258,77 @@ public class DoublyLinkedList {
 	// Like question 7 on the SinglyLinkedList test:
 	// Add a "segment" (another list) onto the end of this list
 	public void addSegmentToEnd(DoublyLinkedList seg) {
-		
+		for (ListNode2<Nucleotide> current = seg.SENTINEL.getNext(); current.getNext() != seg.SENTINEL; current = current.getNext()) {
+			Nucleotide newValue = current.getValue();
+			this.add(newValue);
+		}
 	}
 	
 	// Like question 8 on the SinglyLinkedList test:
 	// You are to remove the next 16 nodes from the list, after the node nodeBefore.
 	// (on the test these nodes were assumed to contain CCCCCCCCGGGGGGGG, but here
 	// you do not need to assume or check for that)
+
+	//what to do if there's only 5 nodes? do you start removing from beggining or throw error?
 	public void removeCCCCCCCCGGGGGGGG(ListNode2<Nucleotide> nodeBefore) {
-		
+		int i = 1;
+		for (ListNode2<Nucleotide> current = nodeBefore.getNext(); current.getNext() != SENTINEL || i == 17; current = current.getNext()) {
+			remove(current.getValue());
+			i++;
+		}
 	}
 	
 	// Like question 9 on the SinglyLinkedList test:
 	// You are to find and delete the first instance of seg in the list.
 	// If seg is not in the list, return false, otherwise return true.
 	public boolean deleteSegment(DoublyLinkedList seg) {
+		listIsNull();
+		seg.listIsNull();
 		
+		boolean remove = false;
+
+		for (ListNode2<Nucleotide> segCurrent = seg.SENTINEL.getNext(); segCurrent.getNext() != SENTINEL; segCurrent = segCurrent.getNext()) {
+			for (ListNode2<Nucleotide> current = SENTINEL.getNext(); current.getNext() != SENTINEL; current = current.getNext()) {
+				if (current == segCurrent) {
+					remove = true;
+				}
+			}
+		}
+
+		if (remove == true) {
+			for (ListNode2<Nucleotide> current = SENTINEL.getNext(); current.getNext() != SENTINEL; current = current.getNext()) {
+				remove(current.getValue());
+			}
+		}
+		return remove;
+
 	}
 	
 	// Like question 10 on the SinglyLinkedList test:
 	// Delete the last three nodes in the list
 	// If there are not enough nodes, return false
 	public boolean deleteLastThree() {
-		
+		if (nodeCount < 3) {
+			return false;
+		}
+
+		getNode(nodeCount - 4).setNext(SENTINEL);
+		SENTINEL.setPrevious(getNode(nodeCount-4));
+		return true;
 	}
 
 	// Like question 11 on the SinglyLinkedList test:
 	// Replaces every node containing "A" with three nodes containing "T" "A" "C"
 	public void replaceEveryAWithTAC() {
-		
+		for (ListNode2<Nucleotide> current = SENTINEL.getNext(); current.getNext() != SENTINEL; current = current.getNext()) {
+			if (current.getValue() == Nucleotide.A) {
+				int index = indexOf(Nucleotide.A);
+				set(index, Nucleotide.T);
+				add(index + 1, Nucleotide.A);
+				add(index + 2, Nucleotide.C);
+				current = current.getNext().getNext();
+			}
+		}
 	}
 
 	public void indexOutOfBounds(int i) {
