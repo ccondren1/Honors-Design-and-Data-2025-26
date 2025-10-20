@@ -3,7 +3,14 @@ public class Recursion {
 	// Prints the value of every node in the singly linked list with the given head,
 	// but in reverse
 	public static void printListInReverse(ListNode head) {
+		ListNode thisNode = new ListNode(head);
+		ListNode nextNode = new ListNode(thisNode.getNext());
+		if (nextNode == null) {
+			System.out.println(thisNode);
+		}
 
+		thisNode = nextNode;
+		printListInReverse(thisNode);
 	}
 
 	// For the given 2D array of Strings, replaces the String at index[r][c]
@@ -15,7 +22,17 @@ public class Recursion {
 	// Trying to infect outside the confines of the grid also has no effect
 	// Precondition: grid has no null entries
 	public static void infect(String[][] grid, int r, int c) {
-
+		String atLocation = grid[r][c];
+		if (atLocation == "infected" || r > grid.length || c > grid[0].length) {
+			return;
+		}
+		if (atLocation != "vaccinated") {
+			atLocation = "infected";
+			infect(grid, r + 1, c);
+			infect(grid, r + 1, c);
+			infect(grid, r, c + 1);
+			infect(grid, r, c - 1);
+		}
 	}
 
 	// How many subsets are there of the numbers 1...n
@@ -26,6 +43,9 @@ public class Recursion {
 	// {1,2}, {2,3}, {3,4}, {1,2,3}, {1,2,4}, {1,3,4}, {1,2,3,4}
 	// Precondition: n > 0
 	public static long countNonConsecutiveSubsets(int n) {
+		int numberOdd = n/2;
+		
+		countNonConsecutiveSubsets(n+2);
 
 	}
 
