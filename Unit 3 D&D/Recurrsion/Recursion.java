@@ -5,9 +5,9 @@ public class Recursion {
 	public static void printListInReverse(ListNode head) {
 		ListNode thisNode = new ListNode(head);
 		ListNode nextNode = new ListNode(thisNode.getNext());
-		if (nextNode == null) {
-			System.out.println(thisNode);
-		}
+		//if (nextNode == null) {
+			//System.out.println(thisNode);
+		//}
 
 		thisNode = nextNode;
 		printListInReverse(thisNode);
@@ -43,9 +43,14 @@ public class Recursion {
 	// {1,2}, {2,3}, {3,4}, {1,2,3}, {1,2,4}, {1,3,4}, {1,2,3,4}
 	// Precondition: n > 0
 	public static long countNonConsecutiveSubsets(int n) {
-		int numberOdd = n/2;
-		
-		countNonConsecutiveSubsets(n+2);
+		if (n == 1) {
+			return 2;
+		}
+		if (n == 2) {
+			return 3;
+		}
+
+		return countNonConsecutiveSubsets(n-1) + countNonConsecutiveSubsets(n-2);
 
 	}
 
@@ -54,7 +59,14 @@ public class Recursion {
 	// Jumping 1-1-2 is considered different than jumping 1-2-1
 	// Precondition: n > 0
 	public static long countWaysToJumpUpStairs(int n) {
+		if (n == 0) {
+			return 1;
+		}
+		if (n < 0) {
+			return 0;
+		}
 
+		return countWaysToJumpUpStairs(n - 1) + countNonConsecutiveSubsets(n - 2) + countNonConsecutiveSubsets(n - 3);
 	}
 
 	// Everything above this line does NOT require a recursive helper method
@@ -70,7 +82,7 @@ public class Recursion {
 	// "bc", "abc"
 	// Order is your choice
 	public static void printSubsets(String str) {
-
+		
 	}
 
 	// List contains a single String to start.
