@@ -3,14 +3,20 @@ public class Recursion {
 	// Prints the value of every node in the singly linked list with the given head,
 	// but in reverse
 	public static void printListInReverse(ListNode head) {
-		ListNode thisNode = new ListNode(head);
-		ListNode nextNode = new ListNode(thisNode.getNext());
-		//if (nextNode == null) {
-			//System.out.println(thisNode);
-		//}
+		// ListNode thisNode = new ListNode(head);
+		// ListNode nextNode = new ListNode(thisNode.getNext());
+		// //if (nextNode == null) {
+		// 	//System.out.println(thisNode);
+		// //}
 
-		thisNode = nextNode;
-		printListInReverse(thisNode);
+		// thisNode = nextNode;
+		// printListInReverse(thisNode);
+
+		if (head == null) {
+			return;
+		}
+		printListInReverse(head.getNext());
+		System.out.println(head.getValue());
 	}
 
 	// For the given 2D array of Strings, replaces the String at index[r][c]
@@ -22,15 +28,27 @@ public class Recursion {
 	// Trying to infect outside the confines of the grid also has no effect
 	// Precondition: grid has no null entries
 	public static void infect(String[][] grid, int r, int c) {
-		String atLocation = grid[r][c];
-		if (atLocation == "infected" || r > grid.length || c > grid[0].length) {
+		if (r < 0 || c < 0 ||  r >= grid.length || c >= grid[0].length) {
 			return;
 		}
-		if (atLocation != "vaccinated") {
-			atLocation = "infected";
+
+		String atLocation = grid[r][c];
+
+		if (atLocation.equals("infected") || atLocation.equals("vaccinated")) {
+			return;
+		}
+
+		grid[r][c] = "infected";
+		if (r < grid.length - 1) {
 			infect(grid, r + 1, c);
-			infect(grid, r + 1, c);
+		} 
+		if (r > 0) {
+			infect(grid, r - 1, c);
+		}
+		if (c < grid[0].length - 1) {
 			infect(grid, r, c + 1);
+		}
+		if (c > 0) {
 			infect(grid, r, c - 1);
 		}
 	}
@@ -44,10 +62,10 @@ public class Recursion {
 	// Precondition: n > 0
 	public static long countNonConsecutiveSubsets(int n) {
 		if (n == 1) {
-			return 2;
+			return 1;
 		}
 		if (n == 2) {
-			return 3;
+			return 2;
 		}
 
 		return countNonConsecutiveSubsets(n-1) + countNonConsecutiveSubsets(n-2);
@@ -81,8 +99,16 @@ public class Recursion {
 	// For example, subsets("abc") would print out "", "a", "b", "c", "ab", "ac",
 	// "bc", "abc"
 	// Order is your choice
-	public static void printSubsets(String str) {
+	public static void subsetHelper() {
 		
+	}
+	public static void printSubsets(String str) {
+		int index = 0;
+		if (index == str.length()) {
+			System.out.println(str.substring(index));
+		}
+		index++;
+		printSubsets(str.substring(index));
 	}
 
 	// List contains a single String to start.
@@ -114,8 +140,41 @@ public class Recursion {
 	// The towers are number 0, 1, 2, and each move should be of
 	// the form "1 -> 2", meaning "take the top disk of tower 1 and
 	// put it on tower 2" etc.
-	public static void solveHanoi(int startingDisks) {
+	public static void hanoiHelper(int numOfDisks, int startTower, int endTower) {
+		//move top to middle
+		//move second to last
+		//move top from middle to last
+		//move third to middle
+		//move top from last to first --yes
+		//move second from last to middle
+		//move top from first to second
+		//move last to last
 
+		int currentTower = startTower;
+		int nextTower = currentTower + 1;
+		if (nextTower > 2) {
+			nextTower = nextTower % 3;
+		}
+		int finalTower = nextTower + 1;
+		if (finalTower > 2) {
+			finalTower = finalTower % 3;
+		}
+		
+		System.out.println("Moving top of disk " + currentTower + " to " + nextTower);
+		System.out.println("Moving second disk on tower " + currentTower + " to " + finalTower);
+		System.out.println("Moving top disk on " + nextTower + " to " + finalTower);
+		System.out.println("Moving third disk from " + currentTower + " to tower " + nextTower);
+		System.out.println("Moving top disk from " + finalTower + " to " + currentTower);
+		System.out.println("Moving third disk from " + finalTower + " to " + nextTower);
+		System.out.println("Moving top disk from " + currentTower + " to " + nextTower);
+	}
+	public static void solveHanoi(int startingDisks) {
+		//solve number of hanoi less than actual number of disks to middle tower
+		//move bottom disk to last
+		//move tower on middle tower to last
+		hanoiHelper(startingDisks - 1, 0, 1);
+		System.out.println("\nMoving bottom disk to tower 2\n");
+		hanoiHelper(startingDisks - 1, 1, 2);
 	}
 
 	// You are partaking in a scavenger hunt!
@@ -137,8 +196,8 @@ public class Recursion {
 	// Then the best possible result is getting the item at time 3 and the one at
 	// time 9
 	// for a total of 20 points, so it would return 20.
-	public static int scavHunt(int[] times, int[] points) {
+	//public static int scavHunt(int[] times, int[] points) {
 
-	}
+	//}
 
 }
