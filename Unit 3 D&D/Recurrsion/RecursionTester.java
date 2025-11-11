@@ -31,7 +31,7 @@ public class RecursionTester {
     //     System.out.println(Recursion.countNonConsecutiveSubsets(n));
 
     //testing Hanoi
-        int disks = 6;
+        int disks = 8;
         System.out.println("Testing hanoi: ");
         Recursion.solveHanoi(disks);
     }

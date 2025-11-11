@@ -64,6 +64,7 @@ public class Recursion {
 		if (n == 1) {
 			return 1;
 		}
+
 		if (n == 2) {
 			return 2;
 		}
@@ -100,7 +101,7 @@ public class Recursion {
 	// "bc", "abc"
 	// Order is your choice
 	public static void subsetHelper() {
-		
+
 	}
 	public static void printSubsets(String str) {
 		int index = 0;
@@ -117,8 +118,11 @@ public class Recursion {
 	// For example, permute("abc") could print out "abc", "acb", "bac", "bca",
 	// "cab", "cba"
 	// Order is your choice
-	public static void printPermutations(String str) {
+	public static void permutationsHelper() {
 
+	}
+	public static void printPermutations(String str) {
+		
 	}
 
 	// Performs a mergeSort on the given array of ints
@@ -140,7 +144,11 @@ public class Recursion {
 	// The towers are number 0, 1, 2, and each move should be of
 	// the form "1 -> 2", meaning "take the top disk of tower 1 and
 	// put it on tower 2" etc.
-	public static void hanoiHelper(int numOfDisks, int startTower, int endTower) {
+	public static void hanoiHelper(int numOfDisks, int startTower, int endTower, int otherTower) {
+		hanoiHelper(numOfDisks - 1, startTower, otherTower, endTower);
+		System.out.println("\nMoving bottom disk from " + startTower + " to " + endTower + "\n");
+		hanoiHelper(numOfDisks - 1, otherTower, endTower, startTower);
+		
 		//move top to middle
 		//move second to last
 		//move top from middle to last
@@ -160,21 +168,12 @@ public class Recursion {
 			finalTower = finalTower % 3;
 		}
 		
-		System.out.println("Moving top of disk " + currentTower + " to " + nextTower);
-		System.out.println("Moving second disk on tower " + currentTower + " to " + finalTower);
-		System.out.println("Moving top disk on " + nextTower + " to " + finalTower);
-		System.out.println("Moving third disk from " + currentTower + " to tower " + nextTower);
-		System.out.println("Moving top disk from " + finalTower + " to " + currentTower);
-		System.out.println("Moving third disk from " + finalTower + " to " + nextTower);
-		System.out.println("Moving top disk from " + currentTower + " to " + nextTower);
 	}
 	public static void solveHanoi(int startingDisks) {
 		//solve number of hanoi less than actual number of disks to middle tower
 		//move bottom disk to last
 		//move tower on middle tower to last
-		hanoiHelper(startingDisks - 1, 0, 1);
-		System.out.println("\nMoving bottom disk to tower 2\n");
-		hanoiHelper(startingDisks - 1, 1, 2);
+		hanoiHelper(startingDisks , 0, 2);
 	}
 
 	// You are partaking in a scavenger hunt!
@@ -196,8 +195,33 @@ public class Recursion {
 	// Then the best possible result is getting the item at time 3 and the one at
 	// time 9
 	// for a total of 20 points, so it would return 20.
-	//public static int scavHunt(int[] times, int[] points) {
 
-	//}
+	public static int findMaxReward(int num, int[] times, int[] points) {
+		if (findNextTime(num, times, points) == 0 || findNextTime(num, times, points) == times[num]) {
+			return points[num];
+		}
+		return findMaxReward(num, times, points) + findMaxReward(findNextTime(num, times, points), times, points);
+	}
+
+	public static int findNextTime(int timeIndex, int[] times, int[] points) {
+		int nextTimeIndex = 0;
+		for (int i = timeIndex; i < times.length; i++) {
+			if (times[i] >= times[timeIndex] + 5) {
+				nextTimeIndex = i;
+			}
+		}
+		return nextTimeIndex;
+	}
+	
+	public static int scavHunt(int[] times, int[] points) {
+		int value = 0;
+		for (int i = 0; i < times.length; i++) {
+			if (findMaxReward(i, times, points) > value){
+				value = findMaxReward(i, times, points);
+			}
+
+		}
+		return value;
+	}
 
 }
