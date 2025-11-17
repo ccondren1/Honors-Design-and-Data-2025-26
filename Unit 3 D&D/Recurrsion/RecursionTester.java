@@ -32,8 +32,8 @@ public class RecursionTester {
         System.out.println(Recursion.countNonConsecutiveSubsets(n));
 
         //test countWaysToJumpStairs
-        System.out.println("\nTestign waysToJumpStairs: ");
-        System.out.println(Recursion.countWaysToJumpUpStairs(5));
+        System.out.println("\nTestign waysToJumpStairs: for 4 steps ");
+        System.out.println(Recursion.countWaysToJumpUpStairs(4));
 
         // //testPrintSubsets
         // System.out.println("\nTesting printSubsets: ");
@@ -45,15 +45,15 @@ public class RecursionTester {
 
         // //test mergeSort
         // System.out.println("\nTesting permutations: ");
-        // int[] arr = {3, 1, 4, 9, 8};
+        int[] arr = {3, 1, 4, 9, 8};
         // Recursion.mergeSort(arr);
 
-        // //test quickSort
-        // System.out.println("\nTesting quickSort: ");
-        // Recursion.quickSort(arr);
+        //test quickSort
+        System.out.println("\nTesting quickSort: ");
+        Recursion.quickSort(arr);
 
         // //testing Hanoi
-        // int disks = 8;
+        // int disks = 4;
         // System.out.println("Testing hanoi: ");
         // Recursion.solveHanoi(disks);
         
