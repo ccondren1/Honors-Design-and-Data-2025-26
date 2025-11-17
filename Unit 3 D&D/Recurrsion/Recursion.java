@@ -3,15 +3,6 @@ public class Recursion {
 	// Prints the value of every node in the singly linked list with the given head,
 	// but in reverse
 	public static void printListInReverse(ListNode head) {
-		// ListNode thisNode = new ListNode(head);
-		// ListNode nextNode = new ListNode(thisNode.getNext());
-		// //if (nextNode == null) {
-		// 	//System.out.println(thisNode);
-		// //}
-
-		// thisNode = nextNode;
-		// printListInReverse(thisNode);
-
 		if (head == null) {
 			return;
 		}
@@ -61,12 +52,15 @@ public class Recursion {
 	// {1,2}, {2,3}, {3,4}, {1,2,3}, {1,2,4}, {1,3,4}, {1,2,3,4}
 	// Precondition: n > 0
 	public static long countNonConsecutiveSubsets(int n) {
-		if (n == 1) {
+		if (n == 0) {
 			return 1;
+		}
+		if (n == 1) {
+			return 2;
 		}
 
 		if (n == 2) {
-			return 2;
+			return 3;
 		}
 
 		return countNonConsecutiveSubsets(n-1) + countNonConsecutiveSubsets(n-2);
@@ -77,16 +71,9 @@ public class Recursion {
 	// How many different ways can they jump up n stairs?
 	// Jumping 1-1-2 is considered different than jumping 1-2-1
 	// Precondition: n > 0
-	public static long countWaysToJumpUpStairs(int n) {
-		if (n == 0) {
-			return 1;
-		}
-		if (n < 0) {
-			return 0;
-		}
-
-		return countWaysToJumpUpStairs(n - 1) + countNonConsecutiveSubsets(n - 2) + countNonConsecutiveSubsets(n - 3);
-	}
+	//public static long countWaysToJumpUpStairs(int n) {
+		
+	//}
 
 	// Everything above this line does NOT require a recursive helper method
 	// ----------------------------------
