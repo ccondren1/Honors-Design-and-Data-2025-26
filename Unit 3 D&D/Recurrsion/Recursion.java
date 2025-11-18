@@ -101,21 +101,26 @@ public class Recursion {
 	// "bc", "abc"
 	// Order is your choice
 
-	public static void subsetHelper(String str, int index) {
+
+	
+	public static void subsetHelper(String str, int index, String prev) {
 		//break string into pieces
 		//combine
 		if (index == str.length()) {
-			System.out.println(str.substring(index));
+			System.out.println(prev);
+			return;
 		}
 
-		subsetHelper(str, index + 1);
+		subsetHelper(str, index + 1, prev);
+		String newString = prev + str.charAt(index);
+		subsetHelper(str, index + 1, newString);
 	}
 
 	public static void printSubsets(String str) {
 		//calls helper
 		//base case: str = "a" subset would be "a" 
 		//if str = "ab" subset would be "a", "b", "ab"
-		subsetHelper(str, 0);
+		subsetHelper(str, 0, "");
 	}
 
 
@@ -159,11 +164,30 @@ public class Recursion {
 
 	// Performs a mergeSort on the given array of ints
 	// Precondition: you may assume there are NO duplicates!!!
-	public static void mergeHelper(int[] n, int[] left, int[] right) {
-		
+	public static void mergeHelper(int[] ints, int[] left, int[] right) {
+		//must merge 2 sorted halves
+		int leftIndex = 0;
+		int rightIndex = 0;
+		int intIndex = 0;
+		while (leftIndex < left.length && rightIndex < right.length) {
+			if (left[leftIndex] < right[rightIndex]) {
+				ints[intIndex] = left[leftIndex]; 
+				leftIndex++;
+				intIndex++;
+			} else if (right[rightIndex] < left[leftIndex]) {
+				ints[intIndex] = right[rightIndex];
+				rightIndex++;
+				intIndex++;
+			}
+		}
+
 	}
 	
 	public static void mergeSort(int[] ints) {
+		if (ints.length <= 1) {
+			return;
+		}
+
 		int[] left = new int[ints.length/2];
 		int[] right = new int[ints.length - ints.length/2];
 		for (int i = 0; i < ints.length/2; i++) {
@@ -175,7 +199,6 @@ public class Recursion {
 	
 		mergeSort(left);
 		mergeSort(right);
-
 		mergeHelper(ints, left, right);
 	}
 
@@ -187,26 +210,65 @@ public class Recursion {
 	// Performs a quickSort on the given array of ints
 	// Use the middle element (index n/2) as the pivot
 	// Precondition: you may assume there are NO duplicates!!!
-	public static void quickSortHelper(int[] ints, int midPoint) {
-		int[] left = new int[ints.length];
-		int[] right = new int[ints.length];
+	public static int pivot(int[] ints, int pivot, int low, int high) {
+		while(high != pivot && low != pivot) {
+			if (low == pivot && high != pivot) {
+				if (ints[high] <= ints[pivot]) {
+					swap(ints, low, high);
+					high--;
+				} else {
+					high--;
+				}
+				continue;
+			}
+			if (high == pivot && low != pivot) {
+				if (ints[low] >= ints[pivot]) {
+					swap(ints, low, high);
+					low++;
+				} else {
+					low++;
+				}
+				continue;
+			}
 
-		for (int i = 0; i < ints.length; i++) {
-			if (ints[i] < midPoint) {
-				left[i] = ints[i];
+			if (ints[low] >= ints[pivot] && ints[high] <= ints[pivot]) {
+				swap(ints, low, high);
+				high--;
+				low++;
+			} else if (ints[high] < ints[pivot] && ints[low] < ints[pivot]) {
+				low++;
+			} else if (ints[high] > ints[pivot] && ints[low] > ints[pivot]) {
+				high--;
 			} else {
-				right[i- ints.length] = ints[i];
+				high--;
+				low++;
 			}
 		}
-		
-		quickSortHelper(left, midPoint/2);
-		quickSortHelper(right, midPoint/2);
+		return pivot;
+	}
+
+	private static void swap(int[] ints, int low, int high) {
+		int temp = ints[low];
+		ints[low] = ints[high];
+		ints[high] = temp;
+	}
+	public static void quickSortHelper(int[] ints, int pivot, int low, int high) {
+		if (low >= high) {
+			return;
+		}
+
+		int newPivot = pivot(ints, pivot, low, high);
+		int newPivotLeft = (low + newPivot)/2;
+		int newPivotRight = (newPivot + high)/2;
+
+		quickSortHelper(ints, newPivotLeft, low, newPivot - 1);
+		quickSortHelper(ints, newPivotRight, newPivot + 1, high);
 
 	}
 	public static void quickSort(int[] ints) {
 		//creates two arrays less than or greater than pivot
-		int pivot = ints[ints.length/2];
-		quickSortHelper(ints, pivot);
+		int pivot = ints.length/2;
+		quickSortHelper(ints, pivot, 0, ints.length - 1);
 	}
 
 
@@ -259,31 +321,31 @@ public class Recursion {
 	// for a total of 20 points, so it would return 20.
 
 	public static int findMaxReward(int num, int[] times, int[] points) {
-		if (findNextTime(num, times, points) == 0 || findNextTime(num, times, points) == times[num]) {
-			return points[num];
+		if (num >= times.length) {
+			return 0;
 		}
-		return findMaxReward(num, times, points) + findMaxReward(findNextTime(num, times, points), times, points);
+		//skip or take points
+		int skip = findMaxReward(num + 1, times, points);
+		int next = points[num] + findMaxReward(findNextTime(num, times, points), times, points);
+
+		if (skip > next) {
+			return skip;
+		} else {
+			return next;
+		}
 	}
 
 	public static int findNextTime(int timeIndex, int[] times, int[] points) {
-		int nextTimeIndex = 0;
-		for (int i = timeIndex; i < times.length; i++) {
+		for (int i = timeIndex + 1; i < times.length; i++) {
 			if (times[i] >= times[timeIndex] + 5) {
-				nextTimeIndex = i;
+				return i;
 			}
 		}
-		return nextTimeIndex;
+		return times.length; // why doesn't return -1 work?
 	}
 	
 	public static int scavHunt(int[] times, int[] points) {
-		int value = 0;
-		for (int i = 0; i < times.length; i++) {
-			if (findMaxReward(i, times, points) > value){
-				value = findMaxReward(i, times, points);
-			}
-
-		}
-		return value;
+		return findMaxReward(0, times, points);
 	}
 
 }
