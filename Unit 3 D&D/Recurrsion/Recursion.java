@@ -169,16 +169,28 @@ public class Recursion {
 		int leftIndex = 0;
 		int rightIndex = 0;
 		int intIndex = 0;
+		
 		while (leftIndex < left.length && rightIndex < right.length) {
 			if (left[leftIndex] < right[rightIndex]) {
 				ints[intIndex] = left[leftIndex]; 
 				leftIndex++;
 				intIndex++;
-			} else if (right[rightIndex] < left[leftIndex]) {
+			} else {
 				ints[intIndex] = right[rightIndex];
 				rightIndex++;
 				intIndex++;
 			}
+		}
+
+		while (leftIndex < left.length) {
+			ints[intIndex] = left[leftIndex];
+			leftIndex++;
+			intIndex++;
+		}
+		while (rightIndex < right.length) {
+			ints[intIndex] = right[rightIndex];
+			rightIndex++;
+			intIndex++;
 		}
 
 	}
@@ -211,38 +223,54 @@ public class Recursion {
 	// Use the middle element (index n/2) as the pivot
 	// Precondition: you may assume there are NO duplicates!!!
 	public static int pivot(int[] ints, int pivot, int low, int high) {
-		while(high != pivot && low != pivot) {
-			if (low == pivot && high != pivot) {
+		while (low <= high) {
+			if (ints[low] < ints[pivot] && low < pivot) {
+				low++;
+				continue;
+			}
+
+			if (ints[high] > ints[pivot] && high > pivot) {
+				high--;
+				continue;
+			}
+
+			if (low == pivot) {
 				if (ints[high] <= ints[pivot]) {
 					swap(ints, low, high);
-					high--;
+					pivot = high;
+					low++;
 				} else {
 					high--;
 				}
 				continue;
 			}
-			if (high == pivot && low != pivot) {
+			if (high == pivot) {
 				if (ints[low] >= ints[pivot]) {
 					swap(ints, low, high);
-					low++;
+					pivot = low;
+					high--;
 				} else {
 					low++;
 				}
 				continue;
 			}
 
-			if (ints[low] >= ints[pivot] && ints[high] <= ints[pivot]) {
-				swap(ints, low, high);
-				high--;
-				low++;
-			} else if (ints[high] < ints[pivot] && ints[low] < ints[pivot]) {
-				low++;
-			} else if (ints[high] > ints[pivot] && ints[low] > ints[pivot]) {
-				high--;
-			} else {
-				high--;
-				low++;
-			}
+			swap(ints, low, high);
+    		low++;
+    		high--;
+			
+			// if (ints[low] >= ints[pivot] && ints[high] <= ints[pivot]) {
+			// 	swap(ints, low, high);
+			// 	high--;
+			// 	low++;
+			// } else if (ints[high] < ints[pivot] && ints[low] < ints[pivot]) {
+			// 	low++;
+			// } else if (ints[high] > ints[pivot] && ints[low] > ints[pivot]) {
+			// 	high--;
+			// } else {
+			// 	high--;
+			// 	low++;
+			// }
 		}
 		return pivot;
 	}
@@ -252,23 +280,23 @@ public class Recursion {
 		ints[low] = ints[high];
 		ints[high] = temp;
 	}
-	public static void quickSortHelper(int[] ints, int pivot, int low, int high) {
+	public static void quickSortHelper(int[] ints, int low, int high) {
 		if (low >= high) {
 			return;
 		}
-
+		
+		int pivot = (low + high)/2;
 		int newPivot = pivot(ints, pivot, low, high);
-		int newPivotLeft = (low + newPivot)/2;
-		int newPivotRight = (newPivot + high)/2;
+	
 
-		quickSortHelper(ints, newPivotLeft, low, newPivot - 1);
-		quickSortHelper(ints, newPivotRight, newPivot + 1, high);
+		quickSortHelper(ints, low, newPivot - 1);
+		quickSortHelper(ints, newPivot + 1, high);
 
 	}
 	public static void quickSort(int[] ints) {
 		//creates two arrays less than or greater than pivot
-		int pivot = ints.length/2;
-		quickSortHelper(ints, pivot, 0, ints.length - 1);
+		//int pivot = ints.length/2;
+		quickSortHelper(ints, 0, ints.length - 1);
 	}
 
 
@@ -285,11 +313,12 @@ public class Recursion {
 	// put it on tower 2" etc.
 	public static void hanoiHelper(int numOfDisks, int startTower, int endTower, int otherTower) {
 		if (numOfDisks == 1) {
+			System.out.println(startTower + " -> "  + endTower);
 			return;
 		}
 
 		hanoiHelper(numOfDisks - 1, startTower, otherTower, endTower);
-		System.out.println("\nMoving disk from " + startTower + " to " + endTower + "\n");
+		System.out.println(startTower + " -> " + endTower);
 		hanoiHelper(numOfDisks - 1, otherTower, endTower, startTower);
 
 	}
@@ -299,6 +328,11 @@ public class Recursion {
 		//move tower on middle tower to last
 		hanoiHelper(startingDisks, 0, 2, 1);
 	}
+
+
+
+
+
 
 	// You are partaking in a scavenger hunt!
 	// You've gotten a secret map to find many of the more difficult
